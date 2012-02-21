@@ -6,5 +6,23 @@ body Mandelbrot
 		c^.realPart = realPart;
 		c^.imaginaryPart = imaginaryPart;
 	}
+	proc absolute (complex) returns r
+	{
+		r = 2;
+	}
+	proc calculateS (complex, maxIterations) returns r
+	{
+		Complex z = complex;
+		int n;
+
+		for[n = 0 to maxIterations]
+		{
+			if(absolute(z) >= 2.0) {return};
+			z^.realPart = z^.realPart * z^.realPart - z^.imaginaryPart * z^.imaginaryPart;
+			z^.imaginaryPart = z^.realPart * z^.imaginaryPart * 2;
+			z^.realPart += complex^.realPart;
+			z^.imaginaryPart += complex^.imaginaryPart;
+		}
+	}
 
 end

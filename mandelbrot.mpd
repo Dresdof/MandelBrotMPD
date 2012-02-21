@@ -7,6 +7,12 @@ global Mandelbrot
 		real imaginaryPart;
 	);
 
-	op complex(real realPart, real imaginaryPart) returns Complex c
+	op complex (real realPart, real imaginaryPart) returns Complex c
+
+	op calculateS (val Complex complex, int maxIterations) returns int i
+	
+	op absolute(Complex complex) returns real r
+
+	
 
 body Mandelbrot separate
