@@ -1,0 +1,7 @@
+resource testProgram()
+	
+	import Mandelbrot;
+	
+	write("Hello World");
+
+end

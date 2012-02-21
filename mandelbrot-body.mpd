@@ -1,0 +1,10 @@
+body Mandelbrot
+
+	proc complex(realPart, imaginaryPart) returns c
+	{
+		c = new(ComplexRec);
+		c^.realPart = realPart;
+		c^.imaginaryPart = imaginaryPart;
+	}
+
+end

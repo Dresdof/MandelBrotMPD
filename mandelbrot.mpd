@@ -1,0 +1,12 @@
+global Mandelbrot
+	
+	type Complex = ptr ComplexRec;
+
+	type ComplexRec = rec(
+		real realPart;
+		real imaginaryPart;
+	);
+
+	op complex(real realPart, real imaginaryPart) returns Complex c
+
+body Mandelbrot separate
