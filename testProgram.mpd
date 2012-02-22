@@ -2,6 +2,23 @@ resource testProgram()
 	
 	import Mandelbrot;
 	
+	int width = 78;
+	int height = 44;
+	int pixelsNumber = width * height;
+	int maxIter = 100000;
+	
+	Complex center = new(ComplexRec);
+	center^.realPart = -.7;
+	center^.imaginaryPart = 0;	
+
+	Complex span = new (ComplexRec);
+	span^.realPart = 2.7;
+	span^.imaginaryPart = -(4.0 / 3.0) * span^.realPart * height / width;
+
+	Complex beginn = new (ComplexRec);
+	beginn^.realPart = 2.7;
+	beginn^.imaginaryPart = -(4.0 / 3.0) * beginn^.realPart * height / width;
+	
 	write("Everithing went better than expected.");
 
 end
