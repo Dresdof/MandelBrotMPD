@@ -2,6 +2,6 @@ resource testProgram()
 	
 	import Mandelbrot;
 	
-	write("Hello World");
+	write("Everithing went better than expected.");
 
 end

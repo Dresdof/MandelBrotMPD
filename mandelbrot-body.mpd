@@ -8,7 +8,8 @@ body Mandelbrot
 	}
 	proc absolute (complex) returns r
 	{
-		r = 2;
+		real complexSquare = complex^.realPart * complex^.realPart + complex^.imaginaryPart * complex^.imaginaryPart;
+		r = sqrt(complexSquare); 
 	}
 	proc calculateS (complex, maxIterations) returns r
 	{
@@ -18,6 +19,7 @@ body Mandelbrot
 		for[n = 0 to maxIterations]
 		{
 			if(absolute(z) >= 2.0) {return};
+
 			z^.realPart = z^.realPart * z^.realPart - z^.imaginaryPart * z^.imaginaryPart;
 			z^.imaginaryPart = z^.realPart * z^.imaginaryPart * 2;
 			z^.realPart += complex^.realPart;
