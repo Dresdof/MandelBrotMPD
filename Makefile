@@ -9,25 +9,26 @@ I = ./MPDinter
 
 link: a.out
 
-a.out: $I/Mandelbrot.o $I/testProgram.o
+a.out: $I/testProgram.o $I/Mandelbrot.o
 	mpdl  -o a.out Mandelbrot testProgram
 
-compile: $I/Mandelbrot.o $I/testProgram.o
+compile: $I/testProgram.o $I/Mandelbrot.o
 
 run: link
 	a.out 
+
+$I/testProgram.o: $I/testProgram.spec $I/Mandelbrot.spec $I/Mandelbrot.o\
+ testProgram.mpd
+	$(MPD) $(MPDFLAGS) -b testProgram.mpd
+
+$I/testProgram.spec: testProgram.mpd
+	$(MPD) $(MPDFLAGS) -s testProgram.mpd
 
 $I/Mandelbrot.o: $I/Mandelbrot.spec mandelbrot-body.mpd
 	$(MPD) $(MPDFLAGS) -b mandelbrot-body.mpd
 
 $I/Mandelbrot.spec: mandelbrot.mpd
 	$(MPD) $(MPDFLAGS) -s mandelbrot.mpd
-
-$I/testProgram.o: $I/testProgram.spec $I/Mandelbrot.spec testProgram.mpd
-	$(MPD) $(MPDFLAGS) -b testProgram.mpd
-
-$I/testProgram.spec: testProgram.mpd
-	$(MPD) $(MPDFLAGS) -s testProgram.mpd
 
 clean:
 	rm -rf $I 
@@ -36,8 +37,8 @@ cleanx: clean
 	rm -f core a.out
 
 ls:
-	@echo mandelbrot-body.mpd mandelbrot.mpd testProgram.mpd
+	@echo testProgram.mpd mandelbrot.mpd mandelbrot-body.mpd
 
 make:
-	mpdm mandelbrot-body.mpd mandelbrot.mpd testProgram.mpd
+	mpdm testProgram.mpd mandelbrot.mpd mandelbrot-body.mpd
 

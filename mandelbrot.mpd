@@ -3,13 +3,13 @@ global Mandelbrot
 	type Complex = ptr ComplexRec;
 
 	type ComplexRec = rec(
-		real realPart;
-		real imaginaryPart;
+		double realPart;
+		double imaginaryPart;
 	);
 
-	op complex (real realPart, real imaginaryPart) returns Complex c
+	op complex(double realPart, double imaginaryPart) returns Complex c
 
-	op calculateS (val Complex complex, int maxIterations) returns int i
+	op mandelbrotIterate(val Complex complex, int maxIterations) returns int i
 	
 	op absolute(Complex complex) returns real r
 

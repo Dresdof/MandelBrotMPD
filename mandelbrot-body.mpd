@@ -13,7 +13,7 @@ body Mandelbrot
 		r = sqrt(complexSquare); 
 	}
 
-	proc calculateS (complex, maxIterations) returns i
+	proc mandelbrotIterate (complex, maxIterations) returns i
 	{
 		Complex z = new(ComplexRec);
 		z^.realPart = complex^.realPart;
