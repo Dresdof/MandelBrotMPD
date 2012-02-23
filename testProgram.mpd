@@ -15,10 +15,32 @@ resource testProgram()
 	span^.realPart = 2.7;
 	span^.imaginaryPart = -(4.0 / 3.0) * span^.realPart * height / width;
 
-	Complex beginn = new (ComplexRec);
-	beginn^.realPart = 2.7;
-	beginn^.imaginaryPart = -(4.0 / 3.0) * beginn^.realPart * height / width;
+	Complex beginning = new (ComplexRec);
+	beginning^.realPart = center^.realPart - span^.realPart / 2;
+	beginning^.imaginaryPart = center^.imaginaryPart - span^.imaginaryPart / 2;
 	
-	write("Everithing went better than expected.");
+	Complex ending = new (ComplexRec);
+	ending^.realPart = center^.realPart + span^.realPart / 2;
+	ending^.imaginaryPart = center^.imaginaryPart + span^.imaginaryPart / 2;
+
+
+	for [pix = 0 to pixelsNumber] 
+	{
+		
+		int x = pix % width;
+		int y = pix / width;
+
+		Complex c = new (ComplexRec);
+		c^.realPart = beginning^.realPart + x * span^.realPart / (width + 1);
+		c^.imaginaryPart = beginning^.imaginaryPart + y * span^.imaginaryPart / (height + 1);
+		
+		int n = calculateS(c, maxIter);
+
+		if (n == maxIter) { n = 0; }
+		if (n > 0) {
+			#char charset[] = ".,c8M@jawrpogOQEPGJ";
+			writes('a');
+		} else { writes(' ');} 
+	}
 
 end

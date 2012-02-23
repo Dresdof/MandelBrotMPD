@@ -13,6 +13,4 @@ global Mandelbrot
 	
 	op absolute(Complex complex) returns real r
 
-	
-
 body Mandelbrot separate

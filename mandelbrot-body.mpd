@@ -1,7 +1,7 @@
 body Mandelbrot
 
 	proc complex(realPart, imaginaryPart) returns c
-	{
+	{	
 		c = new(ComplexRec);
 		c^.realPart = realPart;
 		c^.imaginaryPart = imaginaryPart;
@@ -15,16 +15,16 @@ body Mandelbrot
 
 	proc calculateS (complex, maxIterations) returns i
 	{
-		Complex z = complex;
-
-		for[i = 0 to maxIterations]
+		Complex z = new(ComplexRec);
+		z^.realPart = complex^.realPart;
+		z^.imaginaryPart = complex^.imaginaryPart;
+		
+		for[n = 0 to maxIterations]
 		{
-			if(absolute(z) >= 2.0) {return};
-
-			z^.realPart = z^.realPart * z^.realPart - z^.imaginaryPart * z^.imaginaryPart;
-			z^.imaginaryPart = z^.realPart * z^.imaginaryPart * 2;
-			z^.realPart += complex^.realPart;
-			z^.imaginaryPart += complex^.imaginaryPart;
+			i = n;			
+			if(absolute(z) >= 2.0) {return;}
+			z^.realPart = z^.realPart * z^.realPart - z^.imaginaryPart * z^.imaginaryPart + complex^.realPart;
+			z^.imaginaryPart = z^.realPart * z^.imaginaryPart * 2 + complex^.imaginaryPart;			
 		}
 	}
 
