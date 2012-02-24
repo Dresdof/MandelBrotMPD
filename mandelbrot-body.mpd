@@ -9,22 +9,21 @@ body Mandelbrot
 
 	proc absolute (complex) returns r
 	{
-		real complexSquare = complex^.realPart * complex^.realPart + complex^.imaginaryPart * complex^.imaginaryPart;
-		r = sqrt(complexSquare); 
+		r = sqrt( complex^.realPart**2 + complex^.imaginaryPart**2);
 	}
 
-	proc mandelbrotIterate (complex, maxIterations) returns i
+	proc mandelbrotIterate (complexArg, maxIterations) returns i
 	{
-		Complex z = new(ComplexRec);
-		z^.realPart = complex^.realPart;
-		z^.imaginaryPart = complex^.imaginaryPart;
-		
+		Complex tmpComplex = complex(complexArg^.realPart, complexArg^.imaginaryPart);
+
 		for[n = 0 to maxIterations]
 		{
-			i = n;			
-			if(absolute(z) >= 2.0) {return;}
-			z^.realPart = z^.realPart * z^.realPart - z^.imaginaryPart * z^.imaginaryPart + complex^.realPart;
-			z^.imaginaryPart = z^.realPart * z^.imaginaryPart * 2 + complex^.imaginaryPart;			
+			i = n;
+			if(absolute(tmpComplex) >= 2.0) {return;}
+			
+			real realPart = tmpComplex^.realPart**2 - tmpComplex^.imaginaryPart**2 + complexArg^.realPart;
+			tmpComplex^.imaginaryPart = (tmpComplex^.realPart * tmpComplex^.imaginaryPart) * 2 + complexArg^.imaginaryPart;
+			tmpComplex^.realPart = realPart;
 		}
 	}
 

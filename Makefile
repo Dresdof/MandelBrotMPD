@@ -10,7 +10,7 @@ I = ./MPDinter
 link: a.out
 
 a.out: $I/testProgram.o $I/Mandelbrot.o
-	mpdl  -o a.out Mandelbrot testProgram
+	mpdl  -o a.out Mandelbrot MPDWin testProgram mpdwin.o -lX11
 
 compile: $I/testProgram.o $I/Mandelbrot.o
 
@@ -41,4 +41,3 @@ ls:
 
 make:
 	mpdm testProgram.mpd mandelbrot.mpd mandelbrot-body.mpd
-

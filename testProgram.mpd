@@ -2,13 +2,20 @@ resource testProgram()
 	
 	import Mandelbrot;
 	
-#   import MPDWin
+    import MPDWin;
 	
-	const int width = 78;
-	const int height = 44;
+	const int width = 400;
+	const int height = 300;
 	const int pixelsNumber = width * height;
-	const int maxIter = 10000;
-	
+	const int maxIter = 100;
+
+	winWindow ecran = WinOpen( "", "Ecran", null, UseDefault, width, height);
+
+    WinSetForeground( ecran, "black" );
+    WinSetBackground( ecran, "white" );
+
+    WinEraseArea(ecran, winRectangle(0, 0, width, height));
+
 	const Complex center = complex(-.7, 0);
 	const Complex span = complex(2.7, -(4.0 / 3.0) * 2.7 * height / width);
 	const Complex beginning = complex(center^.realPart - span^.realPart / 2, center^.imaginaryPart - span^.imaginaryPart / 2);
@@ -17,6 +24,9 @@ resource testProgram()
 	Complex complexes[pixelsNumber];
 	int iterations[pixelsNumber];
 
+	int beginAge = age();
+
+	# Assignation du tableau de complexes.
 	for [i = 1 to pixelsNumber] 
 	{
 		int x = i % width;
@@ -24,12 +34,15 @@ resource testProgram()
 
 		complexes[i] = complex(beginning^.realPart + x * span^.realPart / (width + 1), 
 			beginning^.imaginaryPart + y * span^.imaginaryPart / (height + 1));
+		#write(absolute(complexes[i]));
 	}
 	
+	# Calcul de Mandelbrot pour chaque élément du tableau.
 	co [i = 1 to pixelsNumber]
 		iterations[i] = mandelbrotIterate(complexes[i], maxIter);
 	oc
-	
+/*
+	# Impression du résultat en Console.
 	for [i = 1 to pixelsNumber ]
 	{
 		int n = iterations[i];
@@ -38,11 +51,45 @@ resource testProgram()
 		if (n == maxIter) { n = 0; }
 		if (n > 0) {
 			#char charset[] = ".,c8M@jawrpogOQEPGJ";
-			writes('a');
-		} else { writes(' ');} 
+			writes(n);
+		} else { writes(n);} 
 		
 		if(x + 1 == width) { write(); }
 	}
+*/
+
+Complex complexArg = complex(10, 8);
+Complex tmpComplex = complex(7, 4);
+
+real realPart = tmpComplex^.realPart**2 - tmpComplex^.imaginaryPart**2 + complexArg^.realPart;
+
+tmpComplex^.realPart = realPart;
+
+write(tmpComplex^.realPart);
+write(tmpComplex^.imaginaryPart);
+
+
+
+	write(age() - beginAge);
+	
+	int y = 0;
+
+	for [i = 1 to pixelsNumber] {	
+
+		winPoint pt;
 		
+		pt.x = i % width;
+		pt.y = y;
+		
+		int n = iterations[i];
+		
+		if (n == maxIter) { n = 0; }
+		
+		if(n > 0) {
+			WinDrawPixel(ecran, pt);
+		}
+		
+		if(pt.x + 1 == width) { y++; }
+	}
 
 end
