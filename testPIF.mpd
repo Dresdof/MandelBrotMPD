@@ -1,4 +1,4 @@
-resource testSequential()
+resource testPIF()
 	
 	import Mandelbrot;
     import MPDWin;
@@ -26,7 +26,7 @@ resource testSequential()
 
 	complexes = assignateComplexArray(width, height, beginning, span);
 	
-	iterations = mandelbrotSequential(complexes);
+	iterations = mandelbrotPIF(complexes);
 
 	writes("Temps d'exécution : ");
 	write(age() - beginAge);

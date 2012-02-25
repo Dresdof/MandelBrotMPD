@@ -44,15 +44,26 @@ body Mandelbrot
 		}
 	}
 	
-	proc mandelbrotSequential(complexArray) returns ca
+	proc mandelbrotSequential(complexArray) returns ia
 	{
 		int n = ub(complexArray^);
 		
-		ca = new([n] int);
+		ia = new([n] int);
 		
 		for [i = 1 to n] {
-			ca^[i] = mandelbrotCalculationS(complexArray^[i]);
+			ia^[i] = mandelbrotCalculationS(complexArray^[i]);
 		}
+	}
+	
+	proc mandelbrotPIF(complexArray) returns ia
+	{
+		int n = ub(complexArray^);
+		
+		ia = new([n] int);
+		
+		co [i = 1 to n]
+			ia^[i] = mandelbrotCalculationS(complexArray^[i]);
+		oc
 	}
 	
 	proc draw (iterations, screen, width) 
