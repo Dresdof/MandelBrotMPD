@@ -1,5 +1,7 @@
 body Mandelbrot
 
+	import MPDWin;
+	
 	proc complex(realPart, imaginaryPart) returns c
 	{	
 		c = new(ComplexRec);
@@ -7,16 +9,31 @@ body Mandelbrot
 		c^.imaginaryPart = imaginaryPart;
 	}
 
+	proc assignateComplexArray(width, height, beginning, span) returns ca
+	{
+		int pixelsNumber = width * height;
+		ca = new ([pixelsNumber] Complex);
+	
+		for [i = 1 to pixelsNumber] 
+		{
+			int x = i % width;
+			int y = i / width;
+	
+			ca^[i] = complex(beginning^.realPart + x * span^.realPart / (width + 1), 
+				beginning^.imaginaryPart + y * span^.imaginaryPart / (height + 1));
+		}
+	}
+
 	proc absolute (complex) returns r
 	{
 		r = sqrt( complex^.realPart**2 + complex^.imaginaryPart**2);
 	}
 
-	proc mandelbrotIterate (complexArg, maxIterations) returns i
+	proc mandelbrotCalculationS (complexArg) returns i
 	{
 		Complex tmpComplex = complex(complexArg^.realPart, complexArg^.imaginaryPart);
 
-		for[n = 0 to maxIterations]
+		for[n = 0 to maxIter]
 		{
 			i = n;
 			if(absolute(tmpComplex) >= 2.0) {return;}
@@ -24,6 +41,47 @@ body Mandelbrot
 			real realPart = tmpComplex^.realPart**2 - tmpComplex^.imaginaryPart**2 + complexArg^.realPart;
 			tmpComplex^.imaginaryPart = (tmpComplex^.realPart * tmpComplex^.imaginaryPart) * 2 + complexArg^.imaginaryPart;
 			tmpComplex^.realPart = realPart;
+		}
+	}
+	
+	proc mandelbrotSequential(complexArray) returns ca
+	{
+		int n = ub(complexArray^);
+		
+		ca = new([n] int);
+		
+		for [i = 1 to n] {
+			ca^[i] = mandelbrotCalculationS(complexArray^[i]);
+		}
+	}
+	
+	proc draw (iterations, screen, width) 
+	{
+		int y = 0;
+		int oldN = 0;
+	
+		for [i = 1 to ub(iterations^)] {	
+
+			winPoint pt;
+			
+			pt.x = i % width;
+			pt.y = y;
+			
+			int n = iterations^[i];
+			
+			if (n == maxIter) { n = 0; }
+			
+			if(n != oldN) {
+				if(n == 1) { WinSetForeground(screen, "black"); }
+				else { WinSetForeground(screen, "blue"); }
+			}
+			
+			if(n > 0) {
+				WinDrawPixel(screen, pt);
+			}
+			
+			oldN = n;
+			if(pt.x + 1 == width) { y++; }
 		}
 	}
 

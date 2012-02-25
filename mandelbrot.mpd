@@ -1,18 +1,29 @@
 global Mandelbrot
 	
+	import MPDWin;
+	
 	type Complex = ptr ComplexRec;
 
 	type ComplexRec = rec(
 		real realPart;
 		real imaginaryPart;
 	);
+	
+	const int maxIter = 100;
+	
+	type ComplexArray = ptr [*]Complex;
+	type IntegerArray = ptr [*]int;
 
 	op complex(real realPart, real imaginaryPart) returns Complex c
 
-	op mandelbrotIterate(Complex complex, int maxIterations) returns int i
+	op assignateComplexArray(int width, int height, Complex beginning, Complex span) returns ComplexArray ca
+
+	op mandelbrotCalculationS(Complex complex) returns int i
+
+	op mandelbrotSequential(ComplexArray complexArray) returns IntegerArray ca
 	
 	op absolute(Complex complex) returns real r
 	
-	op assignateComplexArray() returns Complex
+	op draw(IntegerArray iterations, winWindow screen, int width)
 
 body Mandelbrot separate

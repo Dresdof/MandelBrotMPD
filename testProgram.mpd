@@ -1,7 +1,6 @@
 resource testProgram()
 	
 	import Mandelbrot;
-	
     import MPDWin;
 	
 	const int width = 400;
@@ -9,87 +8,30 @@ resource testProgram()
 	const int pixelsNumber = width * height;
 	const int maxIter = 100;
 
-	winWindow ecran = WinOpen( "", "Ecran", null, UseDefault, width, height);
-
-    WinSetForeground( ecran, "black" );
-    WinSetBackground( ecran, "white" );
-
-    WinEraseArea(ecran, winRectangle(0, 0, width, height));
+	winWindow screen = WinOpen( "", "Fenetre de rendu.", null, UseDefault, width, height);
 
 	const Complex center = complex(-.7, 0);
 	const Complex span = complex(2.7, -(4.0 / 3.0) * 2.7 * height / width);
 	const Complex beginning = complex(center^.realPart - span^.realPart / 2, center^.imaginaryPart - span^.imaginaryPart / 2);
 	const Complex ending = complex(center^.realPart + span^.realPart / 2, center^.imaginaryPart + span^.imaginaryPart / 2);
 
-	Complex complexes[pixelsNumber];
-	int iterations[pixelsNumber];
+    WinSetForeground( screen, "black" );
+    WinSetBackground( screen, "white" );
+
+    WinEraseArea(screen, winRectangle(0, 0, width, height));	
+	
+	ComplexArray complexes;
+	IntegerArray iterations;
 
 	int beginAge = age();
 
-	# Assignation du tableau de complexes.
-	for [i = 1 to pixelsNumber] 
-	{
-		int x = i % width;
-		int y = i / width;
-
-		complexes[i] = complex(beginning^.realPart + x * span^.realPart / (width + 1), 
-			beginning^.imaginaryPart + y * span^.imaginaryPart / (height + 1));
-		#write(absolute(complexes[i]));
-	}
+	complexes = assignateComplexArray(width, height, beginning, span);
 	
-	# Calcul de Mandelbrot pour chaque élément du tableau.
-	co [i = 1 to pixelsNumber]
-		iterations[i] = mandelbrotIterate(complexes[i], maxIter);
-	oc
-/*
-	# Impression du résultat en Console.
-	for [i = 1 to pixelsNumber ]
-	{
-		int n = iterations[i];
-		int x = i % width;
-		
-		if (n == maxIter) { n = 0; }
-		if (n > 0) {
-			#char charset[] = ".,c8M@jawrpogOQEPGJ";
-			writes(n);
-		} else { writes(n);} 
-		
-		if(x + 1 == width) { write(); }
-	}
-*/
+	iterations = mandelbrotSequential(complexes);
 
-Complex complexArg = complex(10, 8);
-Complex tmpComplex = complex(7, 4);
-
-real realPart = tmpComplex^.realPart**2 - tmpComplex^.imaginaryPart**2 + complexArg^.realPart;
-
-tmpComplex^.realPart = realPart;
-
-write(tmpComplex^.realPart);
-write(tmpComplex^.imaginaryPart);
-
-
-
+	writes("Temps d'exécution : ");
 	write(age() - beginAge);
 	
-	int y = 0;
-
-	for [i = 1 to pixelsNumber] {	
-
-		winPoint pt;
-		
-		pt.x = i % width;
-		pt.y = y;
-		
-		int n = iterations[i];
-		
-		if (n == maxIter) { n = 0; }
-		
-		if(n > 0) {
-			WinDrawPixel(ecran, pt);
-		}
-		
-		if(pt.x + 1 == width) { y++; }
-	}
-
+	draw(iterations, screen, width);
+	
 end
