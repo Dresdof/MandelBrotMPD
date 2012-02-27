@@ -1,0 +1,14 @@
+Ce programme tentera à chaque fois d'ouvrir une fenêtre pour afficher le rendu de l'ensemble de Mandelbrot.
+Si vous rencontrez une erreur de segmentation, vous avez probablement oublié l'option -X dans votre connexion SSH.
+
+Les cibles pour le Makefile sont : 
+
+	par défaut
+Compile tous les programmes de test
+
+	sequential
+Compile seulement la version séquentielle
+
+	PIF
+Compile seulement la version parallèle à granularité fine
+

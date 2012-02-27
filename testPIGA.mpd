@@ -1,4 +1,4 @@
-resource testSequential()
+resource testPIGA()
 	
 	import Mandelbrot;
     import MPDWin;
@@ -25,12 +25,12 @@ resource testSequential()
 	int beginAge = age();
 
 	complexes = assignateComplexArray(width, height, beginning, span);
-	
-	iterations = mandelbrotSequential(complexes);
+
+	iterations = mandelbrotPIGA(complexes);
 
 	writes("Temps d'exécution : ");
 	write(age() - beginAge);
 	
-	draw(iterations, screen, width);
+	#draw(iterations, screen, width);
 	
 end
