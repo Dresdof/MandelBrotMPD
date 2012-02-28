@@ -12,3 +12,10 @@ Compile seulement la version séquentielle
 	PIF
 Compile seulement la version parallèle à granularité fine
 
+	piga
+Compile seulement la version parallèle à granularité grossière adjacente
+
+	pigc
+Compile seulement la version parallèle à granularité grossière cyclique
+
+	

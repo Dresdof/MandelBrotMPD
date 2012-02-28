@@ -1,4 +1,4 @@
-resource testPIGA()
+resource testPST()
 	
 	import Mandelbrot;
     import MPDWin;
@@ -26,7 +26,7 @@ resource testPIGA()
 
 	complexes = assignateComplexArray(width, height, beginning, span);
 
-	iterations = mandelbrotPIGA(complexes);
+	iterations = mandelbrotPST(complexes);
 
 	writes("Temps d'exécution : ");
 	write(age() - beginAge);

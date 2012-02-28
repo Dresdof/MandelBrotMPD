@@ -24,12 +24,12 @@ body Mandelbrot
 		}
 	}
 
-	proc absolute (complex) returns r
+	procedure absolute (Complex complex) returns real r
 	{
 		r = sqrt( complex^.realPart**2 + complex^.imaginaryPart**2);
 	}
 
-	proc mandelbrotCalculationS (complexArg) returns i
+	procedure mandelbrotCalculationS (Complex complexArg) returns int i
 	{
 		Complex tmpComplex = complex(complexArg^.realPart, complexArg^.imaginaryPart);
 
@@ -76,14 +76,14 @@ body Mandelbrot
 		}
 	}
 
-	procedure inf(int iterator, int n, int procNumber) returns int i
+	procedure getLowerBound(int iterator, int n, int procNumber) returns int i
 	{
 		i = (iterator - 1) * (n / procNumber) + min(n % procNumber, iterator-1) + 1;
 	}
 
-	procedure sup(int iterator, int n, int procNumber) returns int i
+	procedure getUpperBound(int iterator, int n, int procNumber) returns int i
 	{
-		i = inf(iterator, n, procNumber) + n / procNumber + int(iterator <= n % procNumber) - 1;
+		i = getLowerBound(iterator, n, procNumber) + n / procNumber + int(iterator <= n % procNumber) - 1;
 	}
 
 	procedure mandelbrotCalculationPIGA (ComplexArray complexArray, ref IntegerArray integerArray, int iterator)
@@ -91,10 +91,10 @@ body Mandelbrot
 		int procNumber = getProcNumber();
 		int n = ub(complexArray^);
 
-		int inf = inf(iterator, n, procNumber);
-		int sup = sup(iterator, n, procNumber);
+		int lowerBound = getLowerBound(iterator, n, procNumber);
+		int upperBound = getUpperBound(iterator, n, procNumber);
 
-		for [ i = inf to sup ]
+		for [ i = lowerBound to upperBound ]
 		{
 			integerArray^[i] = mandelbrotCalculationS(complexArray^[i]);
 		}
@@ -109,6 +109,80 @@ body Mandelbrot
 			mandelbrotCalculationPIGA(complexArray, ia, i);
 		oc
 	}
+
+	procedure mandelbrotCalculationPIGC (ComplexArray complexArray, ref IntegerArray integerArray, int iterator)
+	{
+		int procNumber = getProcNumber();
+		int n = ub(complexArray^);
+
+		for [ i = iterator + 1 to n by procNumber ]
+		{
+			integerArray^[i] = mandelbrotCalculationS(complexArray^[i]);
+		}
+	}
+
+	proc mandelbrotPIGC(complexArray) returns ia
+	{
+		int procNumber = getProcNumber();		
+		ia = new([ub(complexArray^)] int);
+
+		co [i = 0 to getProcNumber() - 1 ]
+			mandelbrotCalculationPIGC(complexArray, ia, i);
+		oc
+	}
+############################################################################################################################
+
+	sem mutex = 1;
+	int nextTask; 
+	int taskSize; 
+	int max;
+
+	procedure fa() returns int i
+	{
+		P(mutex);
+		i = nextTask;
+		nextTask += taskSize;
+		V(mutex);
+	}
+
+	procedure getTask(res int lowerBound, res int upperBound) returns bool available
+	{
+		lowerBound = fa();
+		upperBound = min(lowerBound + taskSize - 1, max);
+
+		available = (lowerBound <= max);
+	}
+
+	procedure mandelbrotCalculationPST(ComplexArray complexArray, IntegerArray integerArray, int lowerBound, int upperBound)
+	{
+		for [ i = lowerBound to upperBound ]
+		{
+			integerArray^[i] = mandelbrotCalculationS(complexArray^[i]);
+		}
+	}
+
+	procedure executeTask(ComplexArray complexArray, IntegerArray integerArray)
+	{
+		int lowerBound, upperBound;
+		
+		while (getTask(lowerBound, upperBound))
+		{
+			mandelbrotCalculationPST(complexArray, integerArray, lowerBound, upperBound);	
+		}
+	}
+
+	proc mandelbrotPST(complexArray) returns ia
+	{
+		nextTask = 1;
+		taskSize = 100;
+		max = ub(complexArray^);
+
+		ia = new([max] int);
+
+		co [i = 1 to getProcNumber()]
+			executeTask(complexArray, ia);
+		oc
+	} 
 
 	proc draw (iterations, screen, width) 
 	{
@@ -139,5 +213,4 @@ body Mandelbrot
 			if(pt.x + 1 == width) { y++; }
 		}
 	}
-
 end

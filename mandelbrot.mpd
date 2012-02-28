@@ -18,15 +18,16 @@ global Mandelbrot
 
 	op assignateComplexArray(int width, int height, Complex beginning, Complex span) returns ComplexArray ca
 
-	op mandelbrotCalculationS(Complex complex) returns int i
 	op mandelbrotSequential(ComplexArray complexArray) returns IntegerArray ia
-	
+
 	op mandelbrotPIF(ComplexArray complexArray) returns IntegerArray ia
-	
+
 	op mandelbrotPIGA(ComplexArray complexArray) returns IntegerArray ia
 
-	op absolute(Complex complex) returns real r
-	
+	op mandelbrotPIGC(ComplexArray complexArray) returns IntegerArray ia
+
+	op mandelbrotPST(ComplexArray complexArray) returns IntegerArray ia
+
 	op draw(IntegerArray iterations, winWindow screen, int width)
 
 body Mandelbrot separate
