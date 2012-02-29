@@ -1,4 +1,4 @@
-resource testPIGC()
+resource runPIGC()
 	
 	import Mandelbrot;
     import MPDWin;
@@ -7,17 +7,11 @@ resource testPIGC()
 	const int height = 300;
 	const int pixelsNumber = width * height;
 
-	winWindow screen = WinOpen( "", "Fenetre de rendu.", null, UseDefault, width, height);
-
 	const Complex center = complex(-.7, 0);
 	const Complex span = complex(2.7, -(4.0 / 3.0) * 2.7 * height / width);
 	const Complex beginning = complex(center^.realPart - span^.realPart / 2, center^.imaginaryPart - span^.imaginaryPart / 2);
 	const Complex ending = complex(center^.realPart + span^.realPart / 2, center^.imaginaryPart + span^.imaginaryPart / 2);
 
-    WinSetForeground( screen, "black" );
-    WinSetBackground( screen, "white" );
-
-    WinEraseArea(screen, winRectangle(0, 0, width, height));	
 	
 	ComplexArray complexes;
 	IntegerArray iterations;
@@ -30,6 +24,13 @@ resource testPIGC()
 
 	writes("Temps d'exécution : ");
 	write(age() - beginAge);
+
+	winWindow screen = WinOpen( "", "Fenetre de rendu.", null, UseDefault, width, height);
+
+    WinSetForeground( screen, "black" );
+    WinSetBackground( screen, "white" );
+
+    WinEraseArea(screen, winRectangle(0, 0, width, height));	
 	
 	draw(iterations, screen, width);
 	

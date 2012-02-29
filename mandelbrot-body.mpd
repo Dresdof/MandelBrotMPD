@@ -130,7 +130,6 @@ body Mandelbrot
 			mandelbrotCalculationPIGC(complexArray, ia, i);
 		oc
 	}
-############################################################################################################################
 
 	sem mutex = 1;
 	int nextTask; 
@@ -174,7 +173,7 @@ body Mandelbrot
 	proc mandelbrotPST(complexArray) returns ia
 	{
 		nextTask = 1;
-		taskSize = 100;
+		taskSize = 250;
 		max = ub(complexArray^);
 
 		ia = new([max] int);

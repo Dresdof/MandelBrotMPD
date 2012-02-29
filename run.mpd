@@ -1,4 +1,4 @@
-resource runPST()
+resource run()
 	
 	import Mandelbrot;
     import MPDWin;
@@ -15,22 +15,51 @@ resource runPST()
 	ComplexArray complexes;
 	IntegerArray iterations;
 
+	complexes = assignateComplexArray(width, height, beginning, span);
+
 	int beginAge = age();
 
-	complexes = assignateComplexArray(width, height, beginning, span);
+	iterations = mandelbrotSequential(complexes);
+
+	printf("Temps d'exécution séquentiel : %i\n", age() - beginAge);
+	
+	beginAge = age();
+
+
+	iterations = mandelbrotPIF(complexes);
+
+	printf("Temps d'exécution PIF : %i\n", age() - beginAge);
+	
+	beginAge = age();
+
+
+	iterations = mandelbrotPIGA(complexes);
+
+	printf("Temps d'exécution PIGA : %i\n", age() - beginAge);
+	
+	beginAge = age();
+
+
+
+	iterations = mandelbrotPIGC(complexes);
+
+	printf("Temps d'exécution PIGC : %i\n", age() - beginAge);
+	
+	beginAge = age();
+
 
 	iterations = mandelbrotPST(complexes);
 
-	writes("Temps d'exécution : ");
-	write(age() - beginAge);
+	printf("Temps d'exécution PST : %i\n", age() - beginAge);
 	
-	winWindow screen = WinOpen( "", "Fenetre de rendu.", null, UseDefault, width, height);
+	beginAge = age();
+
+ 	winWindow screen = WinOpen( "", "Fenetre de rendu.", null, UseDefault, width, height);
 
     WinSetForeground( screen, "black" );
     WinSetBackground( screen, "white" );
 
     WinEraseArea(screen, winRectangle(0, 0, width, height));	
-
 	draw(iterations, screen, width);
 	
 end
