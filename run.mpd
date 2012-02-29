@@ -3,6 +3,21 @@ resource run()
 	import Mandelbrot;
     import MPDWin;
 	
+	optype Proc = ();
+	const int NUM_VERSIONS = 5;
+	string[NUM_VERSIONS + 1] activated;
+
+	type VersionName = string[11];
+	VersionName versionNames[5];
+	versionNames[1] = "séquentiel";
+	versionNames[2] = "PIF";
+	versionNames[3] = "PIGA";
+	versionNames[4] = "PIGC";
+	versionNames[5] = "PST";
+
+	if (numargs() < 1) { activated= "111111"; }
+	else { getarg(1, activated); }
+
 	const int width = 400;
 	const int height = 300;
 	const int pixelsNumber = width * height;
@@ -16,50 +31,50 @@ resource run()
 	IntegerArray iterations;
 
 	complexes = assignateComplexArray(width, height, beginning, span);
+	int beginAge, endAge = 0;
 
-	int beginAge = age();
+	procedure sequential()
+	{ iterations = mandelbrotSequential(complexes); }
 
-	iterations = mandelbrotSequential(complexes);
+	procedure pif()
+	{ iterations = mandelbrotPIF(complexes); }
 
-	printf("Temps d'exécution séquentiel : %i\n", age() - beginAge);
+	procedure piga()
+	{ iterations = mandelbrotPIGA(complexes); }
+
+	procedure pigc()
+	{ iterations = mandelbrotPIGC(complexes); }
+
+	procedure pst()
+	{ iterations = mandelbrotPST(complexes); }
+
+	cap Proc versions[NUM_VERSIONS] = (sequential, pif, piga, pigc, pst);
 	
-	beginAge = age();
+	procedure runVersion (string[*] procedureName, cap Proc p)
+	{
+		beginAge = age();
+		p();
+		endAge = age();
+		printf("Temps d'exécution %s : %i\n", procedureName, endAge - beginAge);
+	}
 
+	for [i = 1 to NUM_VERSIONS]
+	{
+		if(activated[i] == '1')
+		{
+			runVersion(versionNames[i], versions[i]);
+		}
+	}
 
-	iterations = mandelbrotPIF(complexes);
+	if (activated[6] == '1')
+	{
+		winWindow screen = WinOpen( "", "Fenetre de rendu.", null, UseDefault, width, height);
 
-	printf("Temps d'exécution PIF : %i\n", age() - beginAge);
-	
-	beginAge = age();
+		WinSetForeground( screen, "black" );
+		WinSetBackground( screen, "white" );
 
+		WinEraseArea(screen, winRectangle(0, 0, width, height));	
+		draw(iterations, screen, width);
+	}
 
-	iterations = mandelbrotPIGA(complexes);
-
-	printf("Temps d'exécution PIGA : %i\n", age() - beginAge);
-	
-	beginAge = age();
-
-
-
-	iterations = mandelbrotPIGC(complexes);
-
-	printf("Temps d'exécution PIGC : %i\n", age() - beginAge);
-	
-	beginAge = age();
-
-
-	iterations = mandelbrotPST(complexes);
-
-	printf("Temps d'exécution PST : %i\n", age() - beginAge);
-	
-	beginAge = age();
-
- 	winWindow screen = WinOpen( "", "Fenetre de rendu.", null, UseDefault, width, height);
-
-    WinSetForeground( screen, "black" );
-    WinSetBackground( screen, "white" );
-
-    WinEraseArea(screen, winRectangle(0, 0, width, height));	
-	draw(iterations, screen, width);
-	
 end
