@@ -16,6 +16,8 @@ global Mandelbrot
 
 	op complex(real realPart, real imaginaryPart) returns Complex c
 
+	op absolute (Complex complex) returns real r
+	
 	op assignateComplexArray(int width, int height, Complex beginning, Complex span) returns ComplexArray ca
 
 	op mandelbrotSequential(ComplexArray complexArray) returns IntegerArray ia

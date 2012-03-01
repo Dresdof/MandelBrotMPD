@@ -28,7 +28,7 @@ body Mandelbrot
 	}
 
 	# Retourne la valeur absolue du Complex passé en argument.
-	procedure absolute (Complex complex) returns real r
+	proc absolute (complex) returns r
 	{
 		r = sqrt( complex^.realPart**2 + complex^.imaginaryPart**2);
 	}
