@@ -1,3 +1,5 @@
+Git Repository : git://github.com/Dresdof/MandelBrotMPD.git
+
 S'il n'est pas lancé en mode "aveugle", ce programme tentera d'ouvrir une fenêtre pour afficher le rendu de l'ensemble de Mandelbrot.
 Si vous rencontrez une erreur de segmentation, vous avez probablement oublié l'option -X dans votre connexion SSH.
 
