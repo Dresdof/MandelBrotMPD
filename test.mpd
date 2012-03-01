@@ -2,25 +2,30 @@ resource test()
 	
 	import Mandelbrot;
 
-	procedure assertIntArrayEquals (IntegerArray ia1, IntegerArray ia2) returns bool b
+	const int NUM_VERSIONS = 4;
+
+	procedure assertIntArrayEquals (IntegerArray ia1, IntegerArray ia2, string[*] versionName) returns bool b
 	{
 		b = false;
 
-		if(ub(ia1^) != ub(ia2^)) { return; }
+		if(ub(ia1^) != ub(ia2^)) 
+		{ 
+			printf("%s - Erreur : les tableaux de sont pas de même longueur.\n", versionName);
+			return; 
+		}
 
 		for [i = 1 to ub(ia1^)]
 		{
-			if(ia1^[i] != ia2^[i]) { return; }
+			if(ia1^[i] != ia2^[i]) 
+			{
+				printf("%s - Erreur : valeurs différentes.\n", versionName);
+				return; 
+			}
 		} 
-
+		printf("%s - Succès.\n", versionName);
 		b = true;	
 	}
 	
-	procedure assertTrue(bool b)
-	{
-		if(b == false) { exit(1);};
-	}
-
 	const int width = 400;
 	const int height = 300;
 	const int pixelsNumber = width * height;
@@ -33,26 +38,32 @@ resource test()
 	ComplexArray complexes;
 	IntegerArray sequentialIterations, iterations;
 
+	[NUM_VERSIONS]bool resultat;
+
 	write("Assignation du plan.");
 	complexes = assignateComplexArray(width, height, beginning, span);
 	
 	write("Calcul des valeurs séquentielles");
 	sequentialIterations = mandelbrotSequential(complexes);
 
-	write("Calcul des valeurs PIF.");
-	assertTrue(assertIntArrayEquals(sequentialIterations, mandelbrotPIF(complexes)));
-	write("Les valeurs de la version PIF sont correctes.");
+	write("Calcul des valeurs PIF puis comparaison.");
+	resultat[1] = assertIntArrayEquals(sequentialIterations, mandelbrotPIF(complexes), "PIF");
 
-	write("Calcul des valeurs PIGA.");
-	assertTrue(assertIntArrayEquals(sequentialIterations, mandelbrotPIGA(complexes)));
-	write("Les valeurs de la version PIGA sont correctes.");
+	write("Calcul des valeurs PIGA puis comparaison.");
+	resultat[2] = assertIntArrayEquals(sequentialIterations, mandelbrotPIGA(complexes), "PIGA");
 	
-	write("Calcul des valeurs PIGC.");
-	assertTrue(assertIntArrayEquals(sequentialIterations, mandelbrotPIGC(complexes)));
-	write("Les valeurs de la version PIGC sont correctes.");
+	write("Calcul des valeurs PIGC puis comparaison.");
+	resultat[3] = assertIntArrayEquals(sequentialIterations, mandelbrotPIGC(complexes), "PIGC");
 
-	write("Calcul des valeurs PST.");
-	assertTrue(assertIntArrayEquals(sequentialIterations, mandelbrotPST(complexes)));
-	write("Les valeurs de la version PST sont correctes.");
-
+	write("Calcul des valeurs PST puis comparaison.");
+	resultat[4] = assertIntArrayEquals(sequentialIterations, mandelbrotPST(complexes), "PST");
+	
+	bool allOk = true;
+	
+	for [i = 1 to NUM_VERSIONS ]
+	{ if (resultat[i] == false) { allOk = false; } }
+	
+	if(allOk) { write("Tous les tests sont remplis avec succès."); }
+	else { write("Erreur : un ou plusieurs tests ont échoué."); }
+	
 end

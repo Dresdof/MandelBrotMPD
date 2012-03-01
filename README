@@ -1,4 +1,4 @@
-Ce programme tentera à chaque fois d'ouvrir une fenêtre pour afficher le rendu de l'ensemble de Mandelbrot.
+S'il n'est pas lancé en mode "aveugle", ce programme tentera d'ouvrir une fenêtre pour afficher le rendu de l'ensemble de Mandelbrot.
 Si vous rencontrez une erreur de segmentation, vous avez probablement oublié l'option -X dans votre connexion SSH.
 
 Les cibles pour le Makefile sont : 
@@ -26,4 +26,3 @@ Il est possible de lancer une série d'exécutions différente en lançant le pr
 Les cinq premiers chiffres indiquent les versions à exécuter, le dernier indique s'il faut effectuer le rendu dans la fenêtre.
 
 Exemple : "001101" exécute les deux versions à granularité grossière et fait le rendu avec les données de la version cyclique. 
-
