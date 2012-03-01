@@ -7,10 +7,16 @@ I = ./MPDinter
 
 .SUFFIXES:
 
-link: build
+link: build build-test
 
-build: $I/run.o $I/Mandelbrot.o
+build: $I/run.o $I/test.o  $I/Mandelbrot.o
 	mpdl -o run.out Mandelbrot MPDWin run mpdwin.o -lX11
+
+build-test: $I/test.o $I/Mandelbrot.o
+	mpdl -o test.out Mandelbrot MPDWin test mpdwin.o -lX11
+
+test: build-test
+	./test.out
 
 run: build
 	./run.out 
@@ -48,12 +54,19 @@ run-pst: build
 run-pst-blind: build
 	./run.out 000010
 
+$I/test.o: $I/test.spec $I/Mandelbrot.spec $I/Mandelbrot.o\
+ test.mpd
+	$(MPD) $(MPDFLAGS) -b test.mpd
+
 $I/run.o: $I/run.spec $I/Mandelbrot.spec $I/Mandelbrot.o\
  run.mpd
 	$(MPD) $(MPDFLAGS) -b run.mpd
 
 $I/run.spec: run.mpd
 	$(MPD) $(MPDFLAGS) -s run.mpd
+
+$I/test.spec: test.mpd
+	$(MPD) $(MPDFLAGS) -s test.mpd
 
 $I/Mandelbrot.o: $I/Mandelbrot.spec mandelbrot-body.mpd
 	$(MPD) $(MPDFLAGS) -b mandelbrot-body.mpd
@@ -63,4 +76,4 @@ $I/Mandelbrot.spec: mandelbrot.mpd
 
 clean:
 	rm -rf $I 
-	rm -f core run.out
+	rm -f core *.out

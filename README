@@ -4,18 +4,26 @@ Si vous rencontrez une erreur de segmentation, vous avez probablement oublié l'
 Les cibles pour le Makefile sont : 
 
 	par défaut
-Compile tous les programmes de test
-
-	sequential
-Compile seulement la version séquentielle
-
-	PIF
-Compile seulement la version parallèle à granularité fine
-
-	piga
-Compile seulement la version parallèle à granularité grossière adjacente
-
-	pigc
-Compile seulement la version parallèle à granularité grossière cyclique
-
+Compile le programme et le programme de test.
 	
+	test
+Lance le programme de test.
+
+	run
+Lance le programme avec toutes les versions et le rendu en fenêtre.
+
+Différentes cibles alternatives sont disponibles. Elles permettent d'exécuter une seule version :
+	run-sequential
+	run-pif
+	run-piga
+	run-pigc
+	run-pst
+	
+Lorsque le programme exécute plusieurs versions, c'est la dernière version exécutée qui est affichée dans le rendu.
+Ajouter "-blind" à une cible run retire le rendu final en fenêtre (le rendu prend environ 40 secondes).
+
+Il est possible de lancer une série d'exécutions différente en lançant le programme directement avec un argument.
+Les cinq premiers chiffres indiquent les versions à exécuter, le dernier indique s'il faut effectuer le rendu dans la fenêtre.
+
+Exemple : "001101" exécute les deux versions à granularité grossière et fait le rendu avec les données de la version cyclique. 
+

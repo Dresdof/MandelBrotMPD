@@ -1,7 +1,9 @@
 body Mandelbrot
 
+	# Import nécessaire au rendu final.
 	import MPDWin;
 	
+	# Constructeur pour le type "Complex".
 	proc complex(realPart, imaginaryPart) returns c
 	{	
 		c = new(ComplexRec);
@@ -9,6 +11,7 @@ body Mandelbrot
 		c^.imaginaryPart = imaginaryPart;
 	}
 
+	# Assigne un tableau de Complex selon le plan désigné. 
 	proc assignateComplexArray(width, height, beginning, span) returns ca
 	{
 		int pixelsNumber = width * height;
@@ -24,11 +27,13 @@ body Mandelbrot
 		}
 	}
 
+	# Retourne la valeur absolue du Complex passé en argument.
 	procedure absolute (Complex complex) returns real r
 	{
 		r = sqrt( complex^.realPart**2 + complex^.imaginaryPart**2);
 	}
 
+	# Calcul de l'ensemble de Maldebrot pour un nombre.
 	procedure mandelbrotCalculationS (Complex complexArg) returns int i
 	{
 		Complex tmpComplex = complex(complexArg^.realPart, complexArg^.imaginaryPart);
@@ -44,6 +49,7 @@ body Mandelbrot
 		}
 	}
 	
+	# Calcul séquentiel de l'ensemble de Mandelbrot.
 	proc mandelbrotSequential(complexArray) returns ia
 	{
 		int n = ub(complexArray^);
@@ -55,6 +61,7 @@ body Mandelbrot
 		}
 	}
 	
+	# Calcul parallèle à granularité fine
 	proc mandelbrotPIF(complexArray) returns ia
 	{
 		int n = ub(complexArray^);
@@ -66,8 +73,10 @@ body Mandelbrot
 		oc
 	}
 
+	# Fonction utilisée pour la récupération de la valeur de MPD_PARALLEL
 	external getenv(string[*]) returns string[2];
 	
+	# Récupère la valeur de MPD_PARALLEL
 	procedure getProcNumber() returns int procNumber
 	{
 		procNumber = 1;
@@ -76,16 +85,19 @@ body Mandelbrot
 		}
 	}
 
+	# Calcule la borne inférieure d'un morceau pour la version parallèle grossière adjacente.
 	procedure getLowerBound(int iterator, int n, int procNumber) returns int i
 	{
 		i = (iterator - 1) * (n / procNumber) + min(n % procNumber, iterator-1) + 1;
 	}
-
+	
+	# Calcule la borne supérieure d'un morceau pour la version parallèle grossière adjacente.
 	procedure getUpperBound(int iterator, int n, int procNumber) returns int i
 	{
 		i = getLowerBound(iterator, n, procNumber) + n / procNumber + int(iterator <= n % procNumber) - 1;
 	}
 
+	# Calcul de chaque nombre d'un morceau en granularité grossière adjacente.
 	procedure mandelbrotCalculationPIGA (ComplexArray complexArray, ref IntegerArray integerArray, int iterator)
 	{
 		int procNumber = getProcNumber();
@@ -99,7 +111,8 @@ body Mandelbrot
 			integerArray^[i] = mandelbrotCalculationS(complexArray^[i]);
 		}
 	}
-
+	
+	# Calcul parallèle à granularité grossière adjacente.
 	proc mandelbrotPIGA(complexArray) returns ia
 	{
 		int procNumber = getProcNumber();		
@@ -110,6 +123,7 @@ body Mandelbrot
 		oc
 	}
 
+	# Calcul de chaque nombre d'un morceau en granularité grossière cyclique.
 	procedure mandelbrotCalculationPIGC (ComplexArray complexArray, ref IntegerArray integerArray, int iterator)
 	{
 		int procNumber = getProcNumber();
@@ -121,6 +135,7 @@ body Mandelbrot
 		}
 	}
 
+	# Calcul parallèle à granularité grossière cyclique.
 	proc mandelbrotPIGC(complexArray) returns ia
 	{
 		int procNumber = getProcNumber();		
@@ -131,11 +146,13 @@ body Mandelbrot
 		oc
 	}
 
+	# Mutex utilisé pour le sac de tâches.
 	sem mutex = 1;
-	int nextTask; 
-	int taskSize; 
-	int max;
+	
+	# Variables utilisées pour représenter le sac de tâches.
+	int nextTask, taskSize, max;
 
+	# Retourne la borne inférieure de la tâche suivante et incrémente le compteur (thread safe).
 	procedure fa() returns int i
 	{
 		P(mutex);
@@ -144,6 +161,7 @@ body Mandelbrot
 		V(mutex);
 	}
 
+	# Calcule les bornes de la tâche à obtenir.
 	procedure getTask(res int lowerBound, res int upperBound) returns bool available
 	{
 		lowerBound = fa();
@@ -152,6 +170,7 @@ body Mandelbrot
 		available = (lowerBound <= max);
 	}
 
+	# Calcul de chaque nombre d'une tâche. 
 	procedure mandelbrotCalculationPST(ComplexArray complexArray, IntegerArray integerArray, int lowerBound, int upperBound)
 	{
 		for [ i = lowerBound to upperBound ]
@@ -160,6 +179,7 @@ body Mandelbrot
 		}
 	}
 
+	# Exécute les tâches tant que le sac n'est pas vide.
 	procedure executeTask(ComplexArray complexArray, IntegerArray integerArray)
 	{
 		int lowerBound, upperBound;
@@ -170,6 +190,7 @@ body Mandelbrot
 		}
 	}
 
+	# Calcul parallèle à sac de tâches.
 	proc mandelbrotPST(complexArray) returns ia
 	{
 		nextTask = 1;
@@ -183,6 +204,7 @@ body Mandelbrot
 		oc
 	} 
 
+	# Dessin de la fractale à l'écran.
 	proc draw (iterations, screen, width) 
 	{
 		int y = 0;
@@ -199,11 +221,23 @@ body Mandelbrot
 			
 			if (n == maxIter) { n = 0; }
 			
-			if(n != oldN) {
-				if(n == 1) { WinSetForeground(screen, "black"); }
-				else { WinSetForeground(screen, "blue"); }
+			if(n != oldN and n > 0) {
+				if(n < 8)
+				{
+					if(n == 1) { WinSetForeground(screen, "grey"); }
+					else if(n==2) { WinSetForeground(screen, "blue"); }
+					else if(n==3) { WinSetForeground(screen, "yellow"); }
+					else if(n==4) { WinSetForeground(screen, "red"); }
+					else if(n==5) { WinSetForeground(screen, "cyan"); }
+					else if(n==6) { WinSetForeground(screen, "magenta"); }
+					else if(n>=7) { WinSetForeground(screen, "black"); }
+				}
+				else
+				{
+					if (oldN < 8) { WinSetForeground(screen, "black"); }
+				}
 			}
-			
+
 			if(n > 0) {
 				WinDrawPixel(screen, pt);
 			}

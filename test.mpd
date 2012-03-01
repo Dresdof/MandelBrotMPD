@@ -1,0 +1,58 @@
+resource test()
+	
+	import Mandelbrot;
+
+	procedure assertIntArrayEquals (IntegerArray ia1, IntegerArray ia2) returns bool b
+	{
+		b = false;
+
+		if(ub(ia1^) != ub(ia2^)) { return; }
+
+		for [i = 1 to ub(ia1^)]
+		{
+			if(ia1^[i] != ia2^[i]) { return; }
+		} 
+
+		b = true;	
+	}
+	
+	procedure assertTrue(bool b)
+	{
+		if(b == false) { exit(1);};
+	}
+
+	const int width = 400;
+	const int height = 300;
+	const int pixelsNumber = width * height;
+
+	const Complex center = complex(-.7, 0);
+	const Complex span = complex(2.7, -(4.0 / 3.0) * 2.7 * height / width);
+	const Complex beginning = complex(center^.realPart - span^.realPart / 2, center^.imaginaryPart - span^.imaginaryPart / 2);
+	const Complex ending = complex(center^.realPart + span^.realPart / 2, center^.imaginaryPart + span^.imaginaryPart / 2);
+	
+	ComplexArray complexes;
+	IntegerArray sequentialIterations, iterations;
+
+	write("Assignation du plan.");
+	complexes = assignateComplexArray(width, height, beginning, span);
+	
+	write("Calcul des valeurs séquentielles");
+	sequentialIterations = mandelbrotSequential(complexes);
+
+	write("Calcul des valeurs PIF.");
+	assertTrue(assertIntArrayEquals(sequentialIterations, mandelbrotPIF(complexes)));
+	write("Les valeurs de la version PIF sont correctes.");
+
+	write("Calcul des valeurs PIGA.");
+	assertTrue(assertIntArrayEquals(sequentialIterations, mandelbrotPIGA(complexes)));
+	write("Les valeurs de la version PIGA sont correctes.");
+	
+	write("Calcul des valeurs PIGC.");
+	assertTrue(assertIntArrayEquals(sequentialIterations, mandelbrotPIGC(complexes)));
+	write("Les valeurs de la version PIGC sont correctes.");
+
+	write("Calcul des valeurs PST.");
+	assertTrue(assertIntArrayEquals(sequentialIterations, mandelbrotPST(complexes)));
+	write("Les valeurs de la version PST sont correctes.");
+
+end
