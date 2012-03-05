@@ -7,51 +7,51 @@ I = ./MPDinter
 
 .SUFFIXES:
 
-link: build build-test
+link: build build-tests
 
 build: $I/run.o $I/test.o  $I/Mandelbrot.o
 	mpdl -o run.out Mandelbrot MPDWin run mpdwin.o -lX11
 
-build-test: $I/test.o $I/Mandelbrot.o
+build-tests: $I/test.o $I/Mandelbrot.o
 	mpdl -o test.out Mandelbrot MPDWin test mpdwin.o -lX11
 
-test: build-test
+tests: build-tests
 	./test.out
 
-run: build
+mesures: build
 	./run.out 
 
-run-blind: build
+mesures-blind: build
 	./run.out 111110
 
-run-sequential: build
+mesures-sequential: build
 	./run.out 100001
 
-run-sequential-blind: build
+mesures-sequential-blind: build
 	./run.out 100000
 
-run-pif: build
+mesures-pif: build
 	./run.out 010001
 
-run-pif-blind: build
+mesures-pif-blind: build
 	./run.out 010000
 
-run-piga: build
+mesures-piga: build
 	./run.out 001001
 
-run-piga-blind: build
+mesures-piga-blind: build
 	./run.out 001000
 
-run-pigc: build
+mesures-pigc: build
 	./run.out 000101
 
-run-pigc-blind: build
+mesures-pigc-blind: build
 	./run.out 000100
 
-run-pst: build
+mesures-pst: build
 	./run.out 000011
 
-run-pst-blind: build
+mesures-pst-blind: build
 	./run.out 000010
 
 $I/test.o: $I/test.spec $I/Mandelbrot.spec $I/Mandelbrot.o\
